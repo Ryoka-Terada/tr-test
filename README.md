@@ -2,8 +2,80 @@
 
 ## これは firebase(RealtimeDatabase)＋ Nuxt.js(TypeScript) のプロジェクトです
 
-ここにセットアップ手順を書く<br>
-firebase にデプロイしたらその URL を書く
+## セットアップ
+
+1. ローカルにコードを落とす
+
+```
+$ git clone https://github.com/Ryoka-Terada/tr-test.git
+```
+
+2. npm パッケージをインストール
+
+```
+$ npm install
+```
+
+3. 各種ファイルを作成
+
+- .firebaserc ファイルをプロジェクトルートに作成
+
+### .firebaserc
+
+```
+{
+  "projects": {
+    "default": "[firebaseのプロジェクト名]"
+  }
+}
+```
+
+- plugins フォルダをプロジェクトルートに作成。その下に firebase.js と vuetify.js を作成
+
+### plugins/firebase.js
+
+```
+import { initializeApp } from "firebase/app"
+
+const firebaseConfig = {
+  apiKey: "XXXXXXXXXXXXXX",
+  authDomain: "XXXXXXXXXXXXXX",
+  databaseURL: "XXXXXXXXXXXXXX",
+  projectId: "XXXXXXXXXXXXXX",
+  storageBucket: "XXXXXXXXXXXXXX",
+  messagingSenderId: "XXXXXXXXXXXXXX",
+  appId: "XXXXXXXXXXXXXX",
+  measurementId: "XXXXXXXXXXXXXX"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+export default (context, inject) => {
+  inject('firebase', firebaseApp)
+}
+```
+
+### vuetify.js
+
+```
+import Vuetify from 'vuetify/lib'
+```
+
+※補足・firebase の RealtimeDatabase を使っている。RealtimeDatabase の構成は以下。
+
+```RealtimeDatabase
+DB名
+ └ books
+    └ id
+       ├ author: "data"
+       ├ passage: "data"
+       └ title: "data"
+```
+
+## サイトの確認
+
+firebase でデプロイ済(2022/03/03)
+以下から実際の動きを確認できます。
+https://tr-test-ec184.web.app/
 
 ## Build Setup
 

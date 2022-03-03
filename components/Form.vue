@@ -41,6 +41,7 @@
         </v-card-actions>
       </v-form>
       <v-card-actions>
+        <v-btn v-if="edit" color="error" @click="deleteBook(id)">削除</v-btn>
         <v-spacer />
         <v-btn v-if="edit" color="primary" @click="setBook(bookTitle, bookAuthor, bookPassage)">再提出</v-btn>
         <v-btn v-if="input" color="primary" @click="pushBook(bookTitle, bookAuthor, bookPassage)">提出</v-btn>
@@ -51,7 +52,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "nuxt-property-decorator";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { getDatabase, ref, onValue, set, push, remove } from "firebase/database";
 @Component
 export default class BookShelf extends Vue {
   @Prop({ type: String, required: true })
@@ -135,7 +136,16 @@ export default class BookShelf extends Vue {
     this.modeChange();
   }
 
-  // 閲覧モードを一時オフにし、編集モードをオンにする
+  // 本の情報を削除する
+  deleteBook(this: any, id: String){
+    const db = getDatabase(this.$firebase);
+    const data = ref(db, "books/"+id);
+    remove(data);
+    // 削除後、TOP頁に遷移
+    this.$router.push("/");
+  }
+
+  // 閲覧モードと編集モードを切り替える
   modeChange(){
     this.read = !this.read;
     this.edit = !this.edit;
