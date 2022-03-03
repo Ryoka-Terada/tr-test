@@ -141,8 +141,8 @@ export default class BookShelf extends Vue {
     const db = getDatabase(this.$firebase);
     const data = ref(db, "books/"+id);
     remove(data);
-    // 削除後、TOP頁に遷移
-    this.$router.push("/");
+    // 削除後、一覧に遷移
+    this.$router.push("/bookList");
   }
 
   // 閲覧モードと編集モードを切り替える

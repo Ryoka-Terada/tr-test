@@ -1,28 +1,21 @@
 <template>
-  <div>
-    <v-card-title><h3>あなたの好きな本を教えてください</h3></v-card-title>
+  <dev>
     <v-row justify="center">
-      <v-col v-for="(book,i) in books" :key="i" cols="12" sm="8" md="4">
+      <v-col v-for="(book,i) in books" :key="i" cols="12" sm="6" md="4">
         <v-card shaped :to="'book?id='+i">
           <v-card-text>{{book.passage}}</v-card-text>
           <v-card-actions>
-              <v-spacer />
-              <v-card-title>
-                {{ book.title }}
-              </v-card-title>
+            <v-spacer />
+            <v-card-title>
+              {{ book.title }}
+            </v-card-title>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
-      <v-spacer />
-      <v-btn fab color="accent" elevation="11" to="/bookInput">
-        <v-icon color="primary">
-          mdi-plus
-        </v-icon>
-      </v-btn>
-    </v-row>
-  </div>
+    <br /><br />
+    <Footer />
+  </dev>
 </template>
 
 <script lang="ts">
