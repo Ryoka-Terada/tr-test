@@ -11,7 +11,6 @@ export default class Index extends Vue {
   id: any = "";
 
   created() {
-    console.log("here is _id.vue");
     this.id = this.$route.query.id;
   }
 }

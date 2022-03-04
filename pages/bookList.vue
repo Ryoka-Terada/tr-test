@@ -1,21 +1,13 @@
 <template>
   <div>
-    <v-simple-table fixed-header>
-      <thead>
-        <th class="tbl-col">title</th>
-        <th class="tbl-col">author</th>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(book, i) in books"
-          :key="i"
-          @click="selectRow(i)"
-        >
-          <td>{{ book.title }}</td>
-          <td>{{ book.author }}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+    <v-data-table
+      :headers="tableHeader"
+      :items="books"
+      :items-per-page="10"
+      class="elevation-1"
+      @click:row="selectRow"
+    >
+    </v-data-table>
   </div>
 </template>
 
@@ -24,19 +16,30 @@ import { Vue, Component } from "nuxt-property-decorator";
 import { getDatabase, ref, onValue } from "firebase/database";
 @Component
 export default class BookShelf extends Vue {
-  books = "";
+  tableHeader = [
+    { text: "title", sortable: false, value: "title" },
+    { text: "author", sortable: false, value: "author" }
+  ];
+
+  books = [];
+
   // 本の情報を全て取得する
   getBooks(this: any){
+    let books: any;
     const db = getDatabase(this.$firebase);
     const data = ref(db, "books");
     onValue(data, (snapshot) => {
-      const books = snapshot.val();
-      this.books = books;
+      books = snapshot.val();
     })
+    for (const key in books) {
+      const element = books[key];
+      element['id'] = key;
+      this.books.push(element);
+    }
   }
 
-  selectRow(id: String){
-    this.$router.push("/book?id="+id);
+  selectRow(data: any){
+    this.$router.push("book/?id="+data.id);
   }
 
   // インスタンス初期化後に実行

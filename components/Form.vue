@@ -1,57 +1,56 @@
 <template>
-  <div>
-    <v-card>
-      <v-card-title>
-        {{ pagetitle }}
-        <v-spacer />
-        <v-btn v-if="!input" fab small color="accent" elevation="5" @click="modeChange">
-          <v-icon v-if="read" color="primary">
-            mdi-pencil
-          </v-icon>
-          <v-icon v-if="edit" color="primary">
-            mdi-lock
-          </v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-form ref="bookForm">
-        <v-card-actions>
-          <v-text-field
-            v-model="bookTitle"
-            placeholder="本の題名"
-            :rules="[required]"
-            :disabled=read
-          ></v-text-field>
-        </v-card-actions>
-        <v-card-actions>
-          <v-text-field
-            v-model="bookAuthor"
-            placeholder="作者"
-            :rules="[required]"
-            :disabled=read
-          ></v-text-field>
-        </v-card-actions>
-        <v-card-actions>
-          <v-textarea
-            v-model="bookPassage"
-            placeholder="印象的だった文"
-            :rules="[required]"
-            counter="100"
-            :disabled=read
-          ></v-textarea>
-        </v-card-actions>
-      </v-form>
+  <v-card>
+    <v-card-title>
+      {{ pagetitle }}
+      <v-spacer />
+      <v-btn v-if="!input" fab small color="accent" elevation="5" @click="modeChange">
+        <v-icon v-if="read" color="primary">
+          mdi-pencil
+        </v-icon>
+        <v-icon v-if="edit" color="primary">
+          mdi-lock
+        </v-icon>
+      </v-btn>
+    </v-card-title>
+    <v-form ref="bookForm">
       <v-card-actions>
-        <v-btn v-if="edit" color="error" @click="deleteBook(id)">削除</v-btn>
-        <v-spacer />
-        <v-btn v-if="edit" color="primary" @click="setBook(bookTitle, bookAuthor, bookPassage)">再提出</v-btn>
-        <v-btn v-if="input" color="primary" @click="pushBook(bookTitle, bookAuthor, bookPassage)">提出</v-btn>
+        <v-text-field
+          v-model="bookTitle"
+          placeholder="本の題名"
+          :rules="[required]"
+          :disabled=read
+        ></v-text-field>
       </v-card-actions>
-    </v-card>
-  </div>
+      <v-card-actions>
+        <v-text-field
+          v-model="bookAuthor"
+          placeholder="作者"
+          :rules="[required]"
+          :disabled=read
+        ></v-text-field>
+      </v-card-actions>
+      <v-card-actions>
+        <v-textarea
+          v-model="bookPassage"
+          placeholder="印象的だった文"
+          :rules="[required, maxCount]"
+          counter="100"
+          :disabled=read
+        ></v-textarea>
+      </v-card-actions>
+    </v-form>
+    <v-card-actions>
+      <v-btn v-if="edit" color="error" @click="deleteBook(id)">削除</v-btn>
+      <v-spacer />
+      <v-btn v-if="edit&!isChange" disabled>再提出</v-btn>
+      <v-btn v-if="edit&isChange" color="primary" @click="setBook(bookTitle, bookAuthor, bookPassage)">再提出</v-btn>
+      <v-btn v-if="input" color="primary" @click="pushBook(bookTitle, bookAuthor, bookPassage)">提出</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "nuxt-property-decorator";
+import { Vue, Component, Prop, Watch } from "nuxt-property-decorator";
 import { getDatabase, ref, onValue, set, push, remove } from "firebase/database";
 @Component
 export default class BookShelf extends Vue {
@@ -70,7 +69,7 @@ export default class BookShelf extends Vue {
   @Prop({ type: String, required: false })
   id: String;
 
-  isRead: Boolean;
+  isChange: Boolean = false;
   bookTitle: String = "";
   bookAuthor: String = "";
   bookPassage: String = "";
@@ -83,11 +82,25 @@ export default class BookShelf extends Vue {
     }
   }
 
-  // バリデーションを定義
+  // バリデーション(必須)を定義
   required = (value: String) => {
-    if(value==="")
-      return "必須入力です"
+    if(value==="") return "必須入力です"
   };
+
+  // バリデーション(最大文字数)を定義
+  maxCount = (value: String) => {
+    if(value.length>100) return "100文字以下で入力してください"
+  };
+
+  // 編集モードの際、項目に変更が加わった場合に再提出ボタンを活性にする
+  @Watch('bookTitle',{deep: true})
+  @Watch('bookAuthor',{deep: true})
+  @Watch('bookPassage',{deep: true})
+  changeBookInfo(){
+    if(this.edit){
+      this.isChange = true;
+    }
+  }
 
   // 詳細情報を取得
   getBook(this: any, id: String){
@@ -133,6 +146,7 @@ export default class BookShelf extends Vue {
       }
       set(data, val);
     }
+    // 更新後は閲覧モードに戻す
     this.modeChange();
   }
 
@@ -153,5 +167,3 @@ export default class BookShelf extends Vue {
 
 }
 </script>
-
-
