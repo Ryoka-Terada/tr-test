@@ -1,5 +1,5 @@
 <template>
-  <dev>
+  <div>
     <v-row justify="center">
       <v-col v-for="(book,i) in books" :key="i" cols="12" sm="6" md="4">
         <v-card shaped :to="'book?id='+i">
@@ -15,7 +15,7 @@
     </v-row>
     <br /><br />
     <Footer />
-  </dev>
+  </div>
 </template>
 
 <script lang="ts">

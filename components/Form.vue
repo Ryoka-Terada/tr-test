@@ -5,10 +5,10 @@
       <v-spacer />
       <v-btn v-if="!input" fab small color="accent" elevation="5" @click="modeChange">
         <v-icon v-if="read" color="primary">
-          mdi-pencil
-        </v-icon>
-        <v-icon v-if="edit" color="primary">
           mdi-lock
+        </v-icon>
+        <v-icon v-if="edit" color="secondary">
+          mdi-lock-open
         </v-icon>
       </v-btn>
     </v-card-title>
@@ -42,8 +42,7 @@
     <v-card-actions>
       <v-btn v-if="edit" color="error" @click="deleteBook(id)">削除</v-btn>
       <v-spacer />
-      <v-btn v-if="edit&!isChange" disabled>再提出</v-btn>
-      <v-btn v-if="edit&isChange" color="primary" @click="setBook(bookTitle, bookAuthor, bookPassage)">再提出</v-btn>
+      <v-btn v-if="edit" color="primary" :disabled="!isChange" @click="setBook(bookTitle, bookAuthor, bookPassage)">再提出</v-btn>
       <v-btn v-if="input" color="primary" @click="pushBook(bookTitle, bookAuthor, bookPassage)">提出</v-btn>
     </v-card-actions>
   </v-card>
@@ -131,6 +130,7 @@ export default class BookShelf extends Vue {
       this.bookPassage = "";
       // バリデーションチェックもクリア
       this.$refs.bookForm.resetValidation();
+      this.$toast.success("登録しました");
     }
   }
 
@@ -145,9 +145,12 @@ export default class BookShelf extends Vue {
         passage: bookPassage
       }
       set(data, val);
+      // 更新後は閲覧モードに戻す
+      this.modeChange();
+      this.$toast.success("更新しました");
+    }else{
+      this.$toast.error("更新に失敗しました");
     }
-    // 更新後は閲覧モードに戻す
-    this.modeChange();
   }
 
   // 本の情報を削除する
@@ -157,6 +160,7 @@ export default class BookShelf extends Vue {
     remove(data);
     // 削除後、一覧に遷移
     this.$router.push("/bookList");
+    this.$toast.success("削除しました");
   }
 
   // 閲覧モードと編集モードを切り替える
