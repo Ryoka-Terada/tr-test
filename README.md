@@ -30,7 +30,7 @@ $ npm install
 }
 ```
 
-- plugins フォルダをプロジェクトルートに作成。その下に firebase.js と vuetify.js を作成
+- plugins フォルダをプロジェクトルートに作成。その下に firebase.js を作成
 
 ### plugins/firebase.js
 
@@ -52,12 +52,6 @@ const firebaseApp = initializeApp(firebaseConfig);
 export default (context, inject) => {
   inject('firebase', firebaseApp)
 }
-```
-
-### vuetify.js
-
-```
-import Vuetify from 'vuetify/lib'
 ```
 
 ※補足・firebase の RealtimeDatabase を使っている。RealtimeDatabase の構成は以下。

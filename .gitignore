@@ -91,7 +91,8 @@ sw.*
 
 # 以下は2022/03/02に追記
 # plugins
-plugins/*
+# firebase.jsだけAPIキーなどを記載しているためgit管理から外す
+plugins/firebase.js
 
 # firebase
 .firebase/
