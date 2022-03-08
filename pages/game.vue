@@ -1,7 +1,13 @@
 <template>
   <div>
+    <v-row>
+      <p class="explain">頭の休憩にどうぞ……</p>
+    </v-row>
     <v-row justify="center">
-      <v-card-title>○×ゲーム</v-card-title>
+      <v-card-title><h2>ネオ○×ゲーム</h2></v-card-title>
+    </v-row>
+    <v-row justify="center">
+      <p class="explain">マスに表示されるのはプレイヤー名の最初の２文字です</p>
     </v-row>
     <v-row justify="center">
       <v-col>
@@ -17,9 +23,6 @@
           label="プレイヤー名を入力してください(後攻)"
         ></v-text-field>
       </v-col>
-    </v-row>
-    <v-row>
-      <p class="explain">マスに表示されるのはプレイヤー名の最初の２文字です</p>
     </v-row>
     <v-row justify="center">
       <v-col cols="12" sm="4" md="2">
