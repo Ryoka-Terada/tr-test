@@ -13,7 +13,7 @@ export default class GameBoard extends Vue {
   value: String;
 
   select(){
-    this.$emit("changePlayer");
+    this.$emit("changeTurn");
   }
 }
 </script>
