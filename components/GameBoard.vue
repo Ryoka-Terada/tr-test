@@ -1,24 +1,6 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col>
-        <v-text-field
-          v-model="playerName1"
-          label="プレイヤー名を入力してください(先攻)"
-        ></v-text-field>
-      </v-col>
-      <span>VS</span>
-      <v-col>
-        <v-text-field
-          v-model="playerName2"
-          label="プレイヤー名を入力してください(後攻)"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <p class="explain">マスに表示されるのはプレイヤー名の最初の２文字です</p>
-    </v-row>
-    <v-row justify="center">
       <h5>Next player is {{ nextPlayer }}</h5>
     </v-row>
     <v-row></v-row>
@@ -48,17 +30,21 @@ export default class GameBoard extends Vue {
   @Prop({ type: Number, required: true })
   boardsize: number;
 
+  @Prop({ type: String, required: true })
+  playername1: string;
+
+  @Prop({ type: String, required: true })
+  playername2: string;
+
   // 各マスのステータスを保持
   status: string[] = [];
-  // プレイヤー名
-  playerName1: string = "〇";
-  playerName2: string = "×";
   // プレイヤーの手番を管理
   turn: Boolean = true;
-  nextPlayer: String = this.playerName1;
+  nextPlayer: String = "";
 
   created() {
     this.makeStatusArray();
+    this.nextPlayer = this.playername1;
   }
 
   // ステータス配列を再生成
@@ -70,34 +56,11 @@ export default class GameBoard extends Vue {
     }
   }
 
-  // プレイヤー名は入力された最初の2文字
-  @Watch("playerName1", {deep:true})
-  @Watch("playerName2", {deep:true})
-  cutName(){
-    this.playerName1 = this.playerName1.substring(0,2);
-    this.playerName2 = this.playerName2.substring(0,2);
-  }
-
   // ステータスを登録してターン変更
   changeTurn(num: number){
-    this.turn? this.status.splice(num,1,this.playerName1) : this.status.splice(num,1,this.playerName2);
+    this.turn? this.status.splice(num,1,this.playername1) : this.status.splice(num,1,this.playername2);
     this.turn = !this.turn;
-    this.nextPlayer = this.turn? this.playerName1 : this.playerName2;
+    this.nextPlayer = this.turn? this.playername1 : this.playername2;
   }
 }
 </script>
-
-<style scoped>
-span {
-  display: inline-flex;
-  margin: 20px;
-  margin-top: 20px;
-}
-p.explain{
-  font-size: 15px;
-  padding-left: 12px;
-}
-.col{
-  padding-bottom: 1px;
-}
-</style>
