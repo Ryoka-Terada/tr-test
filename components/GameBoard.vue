@@ -79,8 +79,8 @@ export default class GameBoard extends Vue {
     this.boardsize===3? this.wizardAddress=99 : this.wizardAddress=Math.floor(Math.random()*(this.boardsize*this.boardsize-1));
   }
 
-  // マス目の数が変更されたら各種データを再生成＆初期化
-  @Watch("boardsize", {deep:true})
+  // ゲーム開始・リセット時、各種データを再生成＆初期化
+  @Watch("isgamestart", {deep:true})
   initializeParameter(){
     this.generateStatusArray(); // ステータス配列
     this.generatePointCheckArray(); // 結果判定配列
@@ -89,13 +89,6 @@ export default class GameBoard extends Vue {
     this.turn = true; // プレイヤーの手番
     this.nextPlayer = this.playername1; // 先攻プレイヤーの名前
     this.boardsize===3? this.wizardAddress=99 : this.wizardAddress=Math.floor(Math.random()*(this.boardsize*this.boardsize-1)); // ウィザードマスを再指定
-  }
-
-  // プレイヤー名が変更されたら関係部分に反映
-  @Watch("playername1", {deep:true})
-  @Watch("playername2", {deep:true})
-  updateNextPlayerName(){
-    this.turn? this.nextPlayer=this.playername1 : this.nextPlayer=this.playername2;
   }
 
   // マスを選択されたら結果判定処理を行う
@@ -157,7 +150,6 @@ export default class GameBoard extends Vue {
   }
 
   // ステータス配列を生成
-  @Watch("isgamestart", {deep:true})  // ゲームリセット時にデータをクリア
   generateStatusArray(){
     this.status = [];
     for (let i = 0; i < this.boardsize*this.boardsize; i++) {
