@@ -1,6 +1,6 @@
 <template>
   <span>
-  <v-btn v-if="address!=12" class="gameButtom" height="60" width="40" outlined tile color="accent" :disabled="value!=''" @click="select">
+  <v-btn v-if="address!=wizard" class="gameButtom" height="60" width="40" outlined tile color="accent" :disabled="value!=''||!isgamestart" @click="select">
     {{ value }}
   </v-btn>
   <v-btn v-else class="gameButtom" height="60" width="40" outlined tile color="accent" disabled>
@@ -19,6 +19,12 @@ export default class GameBoard extends Vue {
 
   @Prop({ type: Number, required: true })
   address: number;
+
+  @Prop({ type: Number, required: true })
+  wizard: number;
+
+  @Prop({ type: Boolean, required: true })
+  isgamestart: Boolean;
 
   select(){
     this.$emit("changeTurn");

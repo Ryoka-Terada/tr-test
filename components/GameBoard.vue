@@ -23,6 +23,8 @@
         v-for="j of boardsize" :key="j"
         :value="status[j+(i*boardsize)-boardsize-1]"
         :address="(j+(i*boardsize)-boardsize-1)"
+        :wizard="wizardAddress"
+        :isgamestart="isgamestart"
         @changeTurn="changeTurn(j+(i*boardsize)-boardsize-1)"
         @pointCheck="pointCheck(j+(i*boardsize)-boardsize-1)"
       ></Square>
@@ -49,6 +51,9 @@ export default class GameBoard extends Vue {
   @Prop({ type: String, required: true })
   playername2: string;
 
+  @Prop({ type: Boolean, required: true })
+  isgamestart: Boolean;
+
   // 各マスのステータスを保持
   status: string[] = [];
   // プレイヤーの手番を管理
@@ -64,11 +69,14 @@ export default class GameBoard extends Vue {
   // 結果判定
   resultArrays: string[];
   resultArray: string[][];
+  // ウィザードマスの場所
+  wizardAddress: number = 99;
 
   created() {
     this.generateStatusArray();
     this.generatePointCheckArray();
     this.nextPlayer = this.playername1;
+    this.boardsize===3? this.wizardAddress=99 : this.wizardAddress=Math.floor(Math.random()*(this.boardsize*this.boardsize-1));
   }
 
   // マス目の数が変更されたら各種データを再生成＆初期化
@@ -80,6 +88,7 @@ export default class GameBoard extends Vue {
     this.pointPlayer2 = 0; // プレイヤー２の得点
     this.turn = true; // プレイヤーの手番
     this.nextPlayer = this.playername1; // 先攻プレイヤーの名前
+    this.boardsize===3? this.wizardAddress=99 : this.wizardAddress=Math.floor(Math.random()*(this.boardsize*this.boardsize-1)); // ウィザードマスを再指定
   }
 
   // プレイヤー名が変更されたら関係部分に反映
@@ -91,10 +100,9 @@ export default class GameBoard extends Vue {
 
   // マスを選択されたら結果判定処理を行う
   pointCheck(selectedAddress: number){
-    // ジョーカーマスを指す文字列
-    const joker = "joker";
+    // ウィザードマスを指す文字列
+    const wizard = "wizard";
     // 変数を初期化
-    this.resultArray = [];
     this.arraysInSelectedAddress = [];
     this.pointCheckArray.forEach(statusAddressArray => {
       // 各列のテータスを取得
@@ -103,19 +111,23 @@ export default class GameBoard extends Vue {
         this.arraysInSelectedAddress.push(statusAddressArray);
       }
     });
+    // 変数を初期化
+    this.resultArray = [];
     this.arraysInSelectedAddress.forEach(arrayInSelectedAddress => {
       this.resultArrays = [];
       arrayInSelectedAddress.forEach(statusAddress =>{
-        // ロックアイコンの個所はジョーカー扱い
-        statusAddress===12? this.resultArrays.push(joker) : this.resultArrays.push(this.status[statusAddress]);
+        // ウィザードマスの場合、ウィザードマスを指す文字列をステータスに挿入
+        statusAddress===this.wizardAddress? this.resultArrays.push(wizard) : this.resultArrays.push(this.status[statusAddress]);
       })
       this.resultArray.push(this.resultArrays);
     })
     // リーチ＝１点、ビンゴ＝２点
     this.resultArray.forEach(res =>{
-      // 封鎖セルはどっちのプレイヤーのマスにもなる
-      if(res.includes(joker)){
-        res[res.indexOf(joker)]=this.turn? this.playername2 : this.playername1;
+      if(res.includes(wizard)){
+        // // ウィザードマスはどっちのプレイヤーのマスにもなる (ゲームバランスを考え一旦コメントアウト0309)
+        // res[res.indexOf(wizard)]=this.turn? this.playername2 : this.playername1;
+        // ウィザードマスは後攻プレイヤーのマスになる
+        res[res.indexOf(wizard)] = this.playername2;
       }
       if(!this.turn){
         if(res.filter(n =>n===this.playername1).length===this.boardsize-1){
@@ -127,7 +139,7 @@ export default class GameBoard extends Vue {
         }
       } else if(this.turn) {
         if(res.filter(n =>n===this.playername2).length===this.boardsize-1){
-          this.$toast.success(this.playername2+"がポイントゲット");
+          this.$toast.success(this.playername2+"が1点ゲット");
           this.pointPlayer2++;
         }else if(res.filter(n =>n===this.playername2).length===this.boardsize) {
           this.$toast.warning(this.playername2+"がビンゴ！2点ゲット");
@@ -145,6 +157,7 @@ export default class GameBoard extends Vue {
   }
 
   // ステータス配列を生成
+  @Watch("isgamestart", {deep:true})  // ゲームリセット時にデータをクリア
   generateStatusArray(){
     this.status = [];
     for (let i = 0; i < this.boardsize*this.boardsize; i++) {

@@ -30,7 +30,7 @@ $ npm install
 }
 ```
 
-- plugins フォルダをプロジェクトルートに作成。その下に firebase.js を作成
+- plugins フォルダの下に firebase.js を作成
 
 ### plugins/firebase.js
 
