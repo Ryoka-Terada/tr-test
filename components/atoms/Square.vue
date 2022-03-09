@@ -1,11 +1,12 @@
 <template>
   <span>
-  <v-btn v-if="address!=wizard" class="gameButtom" height="60" width="40" outlined tile color="accent" :disabled="value!=''||!isgamestart" @click="select">
-    {{ value }}
-  </v-btn>
-  <v-btn v-else class="gameButtom" height="60" width="40" outlined tile color="accent" disabled>
-    <v-icon>mdi-wizard-hat</v-icon>
-  </v-btn>
+    <v-btn v-if="!isgamestart" class="gameButtom" height="50" width="50" outlined tile small color="accent" disabled>-</v-btn>
+    <v-btn v-else-if="address!=wizard" class="gameButtom" height="50" width="50" outlined tile plain small color="accent" :disabled="value!=''||!isgamestart" @click="select">
+      {{ value }}
+    </v-btn>
+    <v-btn v-else class="gameButtom" height="50" width="50" outlined tile small color="accent" disabled>
+      <v-icon>mdi-wizard-hat</v-icon>
+    </v-btn>
   </span>
 </template>
 
