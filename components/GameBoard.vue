@@ -1,7 +1,17 @@
 <template>
   <v-container>
-    <h4>{{ playername1 }}のポイント：{{ pointPlayer1 }}</h4>
-    <h4>{{ playername2 }}のポイント：{{ pointPlayer2 }}</h4>
+    <v-row>
+      <v-col class="d-flex justify-center">
+        <h4>先攻：{{ playername1 }}のポイント</h4>
+      </v-col>
+      <v-col class="d-flex justify-center">
+        <h4>後攻：{{ playername2 }}のポイント</h4>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex justify-center"><h1>{{ pointPlayer1 }}</h1></v-col>
+      <v-col class="d-flex justify-center"><h1>{{ pointPlayer2 }}</h1></v-col>
+    </v-row>
     <v-row justify="center">
       <h5>Next player is {{ nextPlayer }}</h5>
     </v-row>
@@ -61,13 +71,22 @@ export default class GameBoard extends Vue {
     this.nextPlayer = this.playername1;
   }
 
-  // マス目の数が変更されたら各種データを再生成
+  // マス目の数が変更されたら各種データを再生成＆初期化
   @Watch("boardsize", {deep:true})
-  regenerateArrays(){
+  initializeParameter(){
     this.generateStatusArray(); // ステータス配列
     this.generatePointCheckArray(); // 結果判定配列
     this.pointPlayer1 = 0; // プレイヤー１の得点
     this.pointPlayer2 = 0; // プレイヤー２の得点
+    this.turn = true; // プレイヤーの手番
+    this.nextPlayer = this.playername1; // 先攻プレイヤーの名前
+  }
+
+  // プレイヤー名が変更されたら関係部分に反映
+  @Watch("playername1", {deep:true})
+  @Watch("playername2", {deep:true})
+  updateNextPlayerName(){
+    this.turn? this.nextPlayer=this.playername1 : this.nextPlayer=this.playername2;
   }
 
   // マスを選択されたら結果判定処理を行う

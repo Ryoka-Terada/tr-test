@@ -1,38 +1,53 @@
 <template>
-  <div>
+  <div class="textLight">
     <v-row>
       <p class="explain">頭の休憩にどうぞ……</p>
     </v-row>
     <v-row justify="center">
-      <v-card-title><h2>ネオ○×ゲーム</h2></v-card-title>
-    </v-row>
-    <v-row justify="center">
-      <p class="explain">マスに表示されるのはプレイヤー名の最初の２文字です</p>
-    </v-row>
-    <v-row justify="center">
-      <v-col>
-        <v-text-field
-          v-model="playerName1"
-          label="プレイヤー名を入力してください(先攻)"
-        ></v-text-field>
-      </v-col>
-      <span>VS</span>
-      <v-col>
-        <v-text-field
-          v-model="playerName2"
-          label="プレイヤー名を入力してください(後攻)"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="12" sm="4" md="2">
-        <v-select
-          v-model="boardSize"
-          :items="choiseSize"
-          label="マス目の数"
-        ></v-select>
-      </v-col>
-    </v-row>
+      <v-card-title>
+        <h2>ネオ○×ゲーム</h2>
+      </v-card-title>
+      <v-card-text class="d-flex flex-row-reverse">ネオ○×ゲームとは(説明)</v-card-text>
+    </v-row><br />
+    <v-card class="areaSpace">
+      <v-row>
+        <v-col>
+          <p class="explain">マスに表示されるのはプレイヤー名の最初の２文字です</p>
+        </v-col>
+      </v-row>
+      <v-card-actions>
+        <v-row justify="center">
+          <v-col>
+            <v-text-field
+              v-model="playerName1"
+              label="プレイヤー１(先攻)"
+            ></v-text-field>
+          </v-col>
+          <span>VS</span>
+          <v-col>
+            <v-text-field
+              v-model="playerName2"
+              label="プレイヤー２(後攻)"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-actions>
+      <v-card-actions>
+        <v-row>
+          <v-col>
+            <v-select
+              v-model="boardSize"
+              :items="choiseSize"
+              label="マス目の数"
+            ></v-select>
+          </v-col>
+          <v-col class="d-flex flex-row-reverse align-end">
+            <v-btn color="primary">ゲーム開始</v-btn>
+          </v-col>
+        </v-row>
+      </v-card-actions>
+    </v-card>
+    <br />
     <v-row>
       <GameBoard :boardsize="boardSize" :playername1="playerName1" :playername2="playerName2" />
     </v-row>
@@ -79,7 +94,10 @@ p.explain{
   font-size: 15px;
   padding-left: 12px;
 }
-.col{
-  padding-bottom: 1px;
+.textLight{
+  color: #C2B2B4;
+}
+.areaSpace{
+  padding: 13px;
 }
 </style>
